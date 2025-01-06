@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import DefaultResizeHandleComponent from './DefaultResizeHandleComponent';
+import DefaultRotateHandleComponent from './DefaultRotateHandleComponent';
 import withContext from './withContext';
 import {
   getRectFromCornerCoordinates,
@@ -25,6 +26,9 @@ function wrapShape(WrappedComponent) {
         ...defaultDragState,
         isDragToMove: true,
         nativeActive: false,
+        rotation: props.rotation || 0,
+        isRotating: false,
+        rotationStartAngle: null
       };
 
       this.onMouseUp = this.onMouseUp.bind(this);
@@ -39,6 +43,10 @@ function wrapShape(WrappedComponent) {
       this.keyboardMove = this.keyboardMove.bind(this);
       this.keyboardResize = this.keyboardResize.bind(this);
       this.mouseHandler = this.mouseHandler.bind(this);
+      this.handleRotationStart = this.handleRotationStart.bind(this);
+      this.handleRotationEnd = this.handleRotationEnd.bind(this);
+      this.handleRotationMove = this.handleRotationMove.bind(this);
+      this.handleDoubleClick = this.handleDoubleClick.bind(this);
     }
 
     componentDidMount() {
@@ -69,8 +77,70 @@ function wrapShape(WrappedComponent) {
       }
     }
 
+    calculateAngle(event) {
+      const { x, y, width, height } = this.props;
+      const centerX = x + width / 2;
+      const centerY = y + height / 2;
+
+      const rect = event.target.ownerSVGElement.getBoundingClientRect();
+      const mouseX = event.clientX - rect.left;
+      const mouseY = event.clientY - rect.top;
+
+      const angle = Math.atan2(mouseY - centerY, mouseX - centerX);
+      return angle;
+    }
+
+    handleRotationStart(event) {
+      event.stopPropagation();
+      const angle = this.calculateAngle(event);
+
+      this.setState({
+        isRotating: true,
+        rotationStartAngle: angle,
+      });
+
+      document.addEventListener("mousemove", this.handleRotationMove)
+      document.addEventListener("mouseup", this.handleRotationEnd)
+    }
+
+    handleRotationEnd(event) {
+      event.stopPropagation();
+      const angle = this.calculateAngle(event);
+
+      this.setState({
+        isRotating: false,
+        rotationStartAngle: angle,
+      });
+
+      document.removeEventListener("mousemove", this.handleRotationMove)
+      document.removeEventListener("mouseup", this.handleRotationEnd)
+    }
+
+    handleRotationMove(event) {
+      if (!this.state.isRotating) return;
+
+      const { rotationStartAngle } = this.state;
+      const currentAngle = this.calculateAngle(event);
+      const deltaAngle = currentAngle - rotationStartAngle;
+
+      this.setState((prevState) => ({
+        rotation: prevState.rotation + (deltaAngle * 180) / Math.PI,
+        rotationStartAngle: currentAngle,
+      }));
+    }
+
+    handleDoubleClick(event) {
+      event.stopPropagation();
+      this.setState({rotation: 0, rotationStartAngle: null});
+    }
+
     onMouseMove(event) {
       if (!this.state.isMouseDown || this.unmounted) {
+        return;
+      }
+
+      if (this.state.isRotating) {
+        this.setState({ isRotating: false, rotationStartAngle: null });
         return;
       }
 
@@ -115,11 +185,16 @@ function wrapShape(WrappedComponent) {
         return;
       }
 
+      if (this.state.isRotating) {
+        this.handleRotationEnd(event)
+        return;
+      }
+
       const { onChange } = this.props;
       const {
         dragStartCoordinates,
         dragCurrentCoordinates,
-        isDragToMove,
+        isDragToMove
       } = this.state;
 
       if (isDragToMove) {
@@ -327,6 +402,7 @@ function wrapShape(WrappedComponent) {
         onKeyDown,
         onShapeMountedOrUnmounted,
         ResizeHandleComponent,
+        RotateHandleComponent,
         setMouseHandler,
         wrapperProps,
         ...otherProps
@@ -344,6 +420,7 @@ function wrapShape(WrappedComponent) {
         isMouseDown,
         dragStartCoordinates,
         dragCurrentCoordinates,
+        rotation
       } = this.state;
 
       const active =
@@ -446,16 +523,33 @@ function wrapShape(WrappedComponent) {
           )
         );
 
+        handles.push((
+          <RotateHandleComponent
+              key="rotate-handle"
+              name="rotate-handle"
+              active={active}
+              nativeActive={nativeActive}
+              cursor="grab"
+              isInSelectionGroup={isInSelectionGroup}
+              radius={cornerSize / 2}
+              scale={scale}
+              x={width / 2}
+              rotateHandlePadding={cornerSize * 3}
+              onMouseDown={this.handleRotationStart}
+          />
+        ))
+
       return (
         <g
           data-shape-id={shapeId}
           className="rse-shape-wrapper"
-          transform={`translate(${sides.left},${sides.top})`}
+          transform={`translate(${sides.left},${sides.top}) rotate(${rotation},${width / 2},${height / 2})`}
           style={{
             cursor: 'move',
             outline: 'none',
             ...(disabled ? { pointerEvents: 'none' } : {}),
           }}
+          onDoubleClick={this.handleDoubleClick}
           ref={el => {
             this.wrapperEl = el;
           }}
@@ -565,6 +659,7 @@ function wrapShape(WrappedComponent) {
             {...otherProps}
             width={width}
             height={height}
+            rotation={rotation}
           />
           {!disabled && handles}
         </g>
@@ -600,6 +695,7 @@ function wrapShape(WrappedComponent) {
     wrapperProps: PropTypes.shape({}),
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
+    rotation: PropTypes.number
   };
 
   WrappedShape.defaultProps = {
@@ -620,7 +716,9 @@ function wrapShape(WrappedComponent) {
     onIntermediateChange: () => {},
     onKeyDown: () => {},
     ResizeHandleComponent: DefaultResizeHandleComponent,
+    RotateHandleComponent: DefaultRotateHandleComponent,
     wrapperProps: {},
+    rotation: 0
   };
 
   WrappedShape.displayName = `wrapShape(${WrappedComponent.displayName ||

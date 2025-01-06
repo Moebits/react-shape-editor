@@ -63,12 +63,6 @@
       "@commitlint/config-conventional"
     ]
   },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -e $HUSKY_GIT_PARAMS",
-      "pre-push": "npm run prepush"
-    }
-  },
   "dependencies": {
     "prop-types": "^15.5.7"
   },

@@ -29,7 +29,7 @@ class App extends Component {
 
     this.state = {
       scale: 0.75,
-      items: [...new Array(100)].map((_, index) => ({
+      items: [...new Array(1)].map((_, index) => ({
         id: String(index),
         x: Math.random() * 1500,
         y: Math.random() * 1500,
