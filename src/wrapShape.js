@@ -536,7 +536,7 @@ function wrapShape(WrappedComponent) {
           radius={cornerSize / 2}
           scale={scale}
           x={width / 2}
-          y={-(cornerSize * 3) / scale}
+          y={-(this.props.rotateHandlePadding) / scale}
           onMouseDown={this.handleRotationStart}
           onDoubleClick={this.handleDoubleClick}
         />
@@ -702,6 +702,7 @@ function wrapShape(WrappedComponent) {
     y: PropTypes.number.isRequired,
     rotation: PropTypes.number,
     rotationSpeed: PropTypes.number,
+    rotateHandlePadding: PropTypes.number,
   };
 
   WrappedShape.defaultProps = {
@@ -726,6 +727,7 @@ function wrapShape(WrappedComponent) {
     wrapperProps: {},
     rotation: 0,
     rotationSpeed: 1,
+    rotateHandlePadding: 30,
   };
 
   WrappedShape.displayName = `wrapShape(${WrappedComponent.displayName ||

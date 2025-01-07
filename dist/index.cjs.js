@@ -1088,7 +1088,7 @@ function wrapShape(WrappedComponent) {
           radius: cornerSize / 2,
           scale: scale,
           x: width / 2,
-          y: -(cornerSize * 3) / scale,
+          y: -this.props.rotateHandlePadding / scale,
           onMouseDown: this.handleRotationStart,
           onDoubleClick: this.handleDoubleClick
         }));
@@ -1266,7 +1266,8 @@ function wrapShape(WrappedComponent) {
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
     rotation: PropTypes.number,
-    rotationSpeed: PropTypes.number
+    rotationSpeed: PropTypes.number,
+    rotateHandlePadding: PropTypes.number
   };
   WrappedShape.defaultProps = {
     active: null,
@@ -1289,7 +1290,8 @@ function wrapShape(WrappedComponent) {
     RotateHandleComponent: DefaultRotateHandleComponent,
     wrapperProps: {},
     rotation: 0,
-    rotationSpeed: 1
+    rotationSpeed: 1,
+    rotateHandlePadding: 30
   };
   WrappedShape.displayName = "wrapShape(".concat(WrappedComponent.displayName || WrappedComponent.name || 'Component', ")");
   return withContext(WrappedShape);
