@@ -110,21 +110,21 @@ function wrapShape(WrappedComponent) {
       const { onChange } = this.props;
       const { dragStartCoordinates, dragCurrentCoordinates } = this.state;
 
-      this.setState({
-        isRotating: false,
-        rotationStartAngle: angle,
-      });
-
-      document.removeEventListener('mousemove', this.handleRotationMove);
-      document.removeEventListener('mouseup', this.handleRotationEnd);
-
       const nextRect = getRectFromCornerCoordinates(
         dragStartCoordinates,
         dragCurrentCoordinates,
         this.state.rotation
       );
 
-      onChange(nextRect, this.props);
+      this.setState({
+        isRotating: false,
+        rotationStartAngle: angle,
+      }, () => {
+        onChange(nextRect, this.props);
+      });
+
+      document.removeEventListener('mousemove', this.handleRotationMove);
+      document.removeEventListener('mouseup', this.handleRotationEnd);
     }
 
     handleRotationMove(event) {

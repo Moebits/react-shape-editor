@@ -635,20 +635,23 @@ function wrapShape(WrappedComponent) {
     }, {
       key: "handleRotationEnd",
       value: function handleRotationEnd(event) {
+        var _this2 = this;
+
         event.stopPropagation();
         var angle = this.calculateAngle(event);
         var onChange = this.props.onChange;
         var _this$state = this.state,
             dragStartCoordinates = _this$state.dragStartCoordinates,
             dragCurrentCoordinates = _this$state.dragCurrentCoordinates;
+        var nextRect = getRectFromCornerCoordinates(dragStartCoordinates, dragCurrentCoordinates, this.state.rotation);
         this.setState({
           isRotating: false,
           rotationStartAngle: angle
+        }, function () {
+          onChange(nextRect, _this2.props);
         });
         document.removeEventListener('mousemove', this.handleRotationMove);
         document.removeEventListener('mouseup', this.handleRotationEnd);
-        var nextRect = getRectFromCornerCoordinates(dragStartCoordinates, dragCurrentCoordinates, this.state.rotation);
-        onChange(nextRect, this.props);
       }
     }, {
       key: "handleRotationMove",
@@ -729,7 +732,7 @@ function wrapShape(WrappedComponent) {
     }, {
       key: "onMouseUp",
       value: function onMouseUp() {
-        var _this2 = this;
+        var _this3 = this;
 
         if (!this.state.isMouseDown || this.unmounted) {
           return;
@@ -749,22 +752,22 @@ function wrapShape(WrappedComponent) {
           var nextX = dragCurrentCoordinates.x,
               nextY = dragCurrentCoordinates.y;
           this.setState(defaultDragState, function () {
-            if (nextX !== _this2.props.x || nextY !== _this2.props.y) {
+            if (nextX !== _this3.props.x || nextY !== _this3.props.y) {
               onChange({
                 x: nextX,
                 y: nextY,
-                width: _this2.props.width,
-                height: _this2.props.height,
-                rotation: _this2.state.rotation
-              }, _this2.props);
+                width: _this3.props.width,
+                height: _this3.props.height,
+                rotation: _this3.state.rotation
+              }, _this3.props);
             }
           });
         } else {
           this.setState(defaultDragState, function () {
-            var nextRect = getRectFromCornerCoordinates(dragStartCoordinates, dragCurrentCoordinates, _this2.state.rotation);
+            var nextRect = getRectFromCornerCoordinates(dragStartCoordinates, dragCurrentCoordinates, _this3.state.rotation);
 
-            if (nextRect.height !== _this2.props.height || nextRect.width !== _this2.props.width || nextRect.x !== _this2.props.x || nextRect.y !== _this2.props.y) {
-              onChange(nextRect, _this2.props);
+            if (nextRect.height !== _this3.props.height || nextRect.width !== _this3.props.width || nextRect.x !== _this3.props.x || nextRect.y !== _this3.props.y) {
+              onChange(nextRect, _this3.props);
             }
           });
         }
@@ -781,7 +784,7 @@ function wrapShape(WrappedComponent) {
     }, {
       key: "simulateTransform",
       value: function simulateTransform(nextRect) {
-        var _this3 = this;
+        var _this4 = this;
 
         cancelAnimationFrame(this.simulatedTransform);
 
@@ -791,7 +794,7 @@ function wrapShape(WrappedComponent) {
         }
 
         this.simulatedTransform = window.requestAnimationFrame(function () {
-          _this3.setState(function () {
+          _this4.setState(function () {
             return {
               isMouseDown: true,
               dragStartCoordinates: {
@@ -954,7 +957,7 @@ function wrapShape(WrappedComponent) {
     }, {
       key: "render",
       value: function render() {
-        var _this4 = this;
+        var _this5 = this;
 
         var _this$props7 = this.props,
             constrainMove = _this$props7.constrainMove,
@@ -1066,9 +1069,9 @@ function wrapShape(WrappedComponent) {
                 x: planeX - movingPoint.x,
                 y: planeY - movingPoint.y
               };
-              setMouseHandler(_this4.mouseHandler);
+              setMouseHandler(_this5.mouseHandler);
 
-              _this4.setState({
+              _this5.setState({
                 isMouseDown: true,
                 dragStartCoordinates: anchorPoint,
                 dragCurrentCoordinates: movingPoint,
@@ -1108,27 +1111,27 @@ function wrapShape(WrappedComponent) {
             pointerEvents: 'none'
           } : {}),
           ref: function ref(el) {
-            _this4.wrapperEl = el;
+            _this5.wrapperEl = el;
           },
           focusable: !disabled ? true : undefined // IE11 support
           ,
           tabIndex: !disabled ? 0 : undefined,
           onFocus: function onFocus(event) {
-            _this4.gotFocusAfterClick = true;
+            _this5.gotFocusAfterClick = true;
             onChildFocus(shapeId, isInternalComponent);
 
-            _this4.setState({
+            _this5.setState({
               nativeActive: true
             });
 
-            _onFocus(event, _this4.props);
+            _onFocus(event, _this5.props);
           },
           onBlur: function onBlur(event) {
-            _this4.setState({
+            _this5.setState({
               nativeActive: false
             });
 
-            _onBlur(event, _this4.props);
+            _onBlur(event, _this5.props);
           },
           onMouseDown: function onMouseDown(event) {
             event.stopPropagation(); // Focusing support for Safari
@@ -1137,10 +1140,10 @@ function wrapShape(WrappedComponent) {
             // does work, however). This logic waits to see if focus was called
             // following a click, and forces the focused state if necessary.
 
-            _this4.gotFocusAfterClick = false;
+            _this5.gotFocusAfterClick = false;
             setTimeout(function () {
-              if (!_this4.unmounted && !_this4.gotFocusAfterClick) {
-                _this4.forceFocus();
+              if (!_this5.unmounted && !_this5.gotFocusAfterClick) {
+                _this5.forceFocus();
               }
             });
 
@@ -1153,9 +1156,9 @@ function wrapShape(WrappedComponent) {
               return;
             }
 
-            var _this4$props = _this4.props,
-                x = _this4$props.x,
-                y = _this4$props.y;
+            var _this5$props = _this5.props,
+                x = _this5$props.x,
+                y = _this5$props.y;
 
             var _getPlaneCoordinatesF4 = getPlaneCoordinatesFromEvent(event),
                 planeX = _getPlaneCoordinatesF4.x,
@@ -1165,9 +1168,9 @@ function wrapShape(WrappedComponent) {
               x: planeX - x,
               y: planeY - y
             };
-            setMouseHandler(_this4.mouseHandler);
+            setMouseHandler(_this5.mouseHandler);
 
-            _this4.setState({
+            _this5.setState({
               isMouseDown: true,
               dragCurrentCoordinates: {
                 x: x,
@@ -1182,7 +1185,7 @@ function wrapShape(WrappedComponent) {
             });
           },
           onKeyDown: function onKeyDown(event) {
-            _onKeyDown(event, _this4.props); // If the user-defined callback called event.preventDefault(),
+            _onKeyDown(event, _this5.props); // If the user-defined callback called event.preventDefault(),
             // we consider the event handled
 
 
@@ -1193,13 +1196,13 @@ function wrapShape(WrappedComponent) {
             var handled = true;
 
             var handleKeyboardTransform = function handleKeyboardTransform(moveArgs, resizeArgs) {
-              return event.shiftKey ? _this4.keyboardResize.apply(_this4, _toConsumableArray(resizeArgs)) : _this4.keyboardMove.apply(_this4, _toConsumableArray(moveArgs));
+              return event.shiftKey ? _this5.keyboardResize.apply(_this5, _toConsumableArray(resizeArgs)) : _this5.keyboardMove.apply(_this5, _toConsumableArray(moveArgs));
             };
 
             switch (event.key) {
               case 'Backspace':
               case 'Delete':
-                onDelete(event, _this4.props);
+                onDelete(event, _this5.props);
                 break;
 
               case 'ArrowUp':
