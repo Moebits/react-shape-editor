@@ -107,6 +107,9 @@ function wrapShape(WrappedComponent) {
       event.stopPropagation();
       const angle = this.calculateAngle(event);
 
+      const { onChange } = this.props;
+      const { dragStartCoordinates, dragCurrentCoordinates } = this.state;
+
       this.setState({
         isRotating: false,
         rotationStartAngle: angle,
@@ -114,13 +117,23 @@ function wrapShape(WrappedComponent) {
 
       document.removeEventListener('mousemove', this.handleRotationMove);
       document.removeEventListener('mouseup', this.handleRotationEnd);
+
+      const nextRect = getRectFromCornerCoordinates(
+        dragStartCoordinates,
+        dragCurrentCoordinates,
+        newRotation
+      );
+
+      onChange(nextRect, this.props);
     }
 
     handleRotationMove(event) {
       if (!this.state.isRotating) return;
 
-      const { onChange } = this.props;
-      const { rotation, rotationStartAngle, dragStartCoordinates, dragCurrentCoordinates } = this.state;
+      const {
+        rotation,
+        rotationStartAngle
+      } = this.state;
       const currentAngle = this.calculateAngle(event);
       const deltaAngle = currentAngle - rotationStartAngle;
 
@@ -131,14 +144,6 @@ function wrapShape(WrappedComponent) {
         rotation: newRotation,
         rotationStartAngle: currentAngle,
       }));
-
-      const nextRect = getRectFromCornerCoordinates(
-        dragStartCoordinates,
-        dragCurrentCoordinates,
-        newRotation
-      );
-
-      onChange(nextRect, this.props);
     }
 
     handleDoubleClick(event) {
@@ -195,6 +200,10 @@ function wrapShape(WrappedComponent) {
 
     onMouseUp() {
       if (!this.state.isMouseDown || this.unmounted) {
+        return;
+      }
+
+      if (this.state.isRotating) {
         return;
       }
 
