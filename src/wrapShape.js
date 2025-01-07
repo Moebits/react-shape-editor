@@ -28,7 +28,7 @@ function wrapShape(WrappedComponent) {
         nativeActive: false,
         rotation: props.rotation || 0,
         isRotating: false,
-        rotationStartAngle: null
+        rotationStartAngle: null,
       };
 
       this.onMouseUp = this.onMouseUp.bind(this);
@@ -99,8 +99,8 @@ function wrapShape(WrappedComponent) {
         rotationStartAngle: angle,
       });
 
-      document.addEventListener("mousemove", this.handleRotationMove)
-      document.addEventListener("mouseup", this.handleRotationEnd)
+      document.addEventListener('mousemove', this.handleRotationMove);
+      document.addEventListener('mouseup', this.handleRotationEnd);
     }
 
     handleRotationEnd(event) {
@@ -112,8 +112,8 @@ function wrapShape(WrappedComponent) {
         rotationStartAngle: angle,
       });
 
-      document.removeEventListener("mousemove", this.handleRotationMove)
-      document.removeEventListener("mouseup", this.handleRotationEnd)
+      document.removeEventListener('mousemove', this.handleRotationMove);
+      document.removeEventListener('mouseup', this.handleRotationEnd);
     }
 
     handleRotationMove(event) {
@@ -123,7 +123,7 @@ function wrapShape(WrappedComponent) {
       const currentAngle = this.calculateAngle(event);
       const deltaAngle = currentAngle - rotationStartAngle;
 
-      this.setState((prevState) => ({
+      this.setState(prevState => ({
         rotation: prevState.rotation + (deltaAngle * 180) / Math.PI,
         rotationStartAngle: currentAngle,
       }));
@@ -131,7 +131,7 @@ function wrapShape(WrappedComponent) {
 
     handleDoubleClick(event) {
       event.stopPropagation();
-      this.setState({rotation: 0, rotationStartAngle: null});
+      this.setState({ rotation: 0, rotationStartAngle: null });
     }
 
     onMouseMove(event) {
@@ -186,7 +186,6 @@ function wrapShape(WrappedComponent) {
       }
 
       if (this.state.isRotating) {
-        this.handleRotationEnd(event)
         return;
       }
 
@@ -194,7 +193,7 @@ function wrapShape(WrappedComponent) {
       const {
         dragStartCoordinates,
         dragCurrentCoordinates,
-        isDragToMove
+        isDragToMove,
       } = this.state;
 
       if (isDragToMove) {
@@ -420,7 +419,7 @@ function wrapShape(WrappedComponent) {
         isMouseDown,
         dragStartCoordinates,
         dragCurrentCoordinates,
-        rotation
+        rotation,
       } = this.state;
 
       const active =
@@ -523,27 +522,29 @@ function wrapShape(WrappedComponent) {
           )
         );
 
-        handles.push((
-          <RotateHandleComponent
-              key="rotate-handle"
-              name="rotate-handle"
-              active={active}
-              nativeActive={nativeActive}
-              cursor="grab"
-              isInSelectionGroup={isInSelectionGroup}
-              radius={cornerSize / 2}
-              scale={scale}
-              x={width / 2}
-              rotateHandlePadding={cornerSize * 3}
-              onMouseDown={this.handleRotationStart}
-          />
-        ))
+      handles.push(
+        <RotateHandleComponent
+          key="rotate-handle"
+          name="rotate-handle"
+          active={active}
+          nativeActive={nativeActive}
+          cursor="grab"
+          isInSelectionGroup={isInSelectionGroup}
+          radius={cornerSize / 2}
+          scale={scale}
+          x={width / 2}
+          rotateHandlePadding={cornerSize * 3}
+          onMouseDown={this.handleRotationStart}
+        />
+      );
 
       return (
         <g
           data-shape-id={shapeId}
           className="rse-shape-wrapper"
-          transform={`translate(${sides.left},${sides.top}) rotate(${rotation},${width / 2},${height / 2})`}
+          transform={`translate(${sides.left},${
+            sides.top
+          }) rotate(${rotation},${width / 2},${height / 2})`}
           style={{
             cursor: 'move',
             outline: 'none',
@@ -688,6 +689,7 @@ function wrapShape(WrappedComponent) {
     onIntermediateChange: PropTypes.func,
     onShapeMountedOrUnmounted: PropTypes.func.isRequired,
     ResizeHandleComponent: PropTypes.func,
+    RotateHandleComponent: PropTypes.func,
     scale: PropTypes.number.isRequired,
     shapeId: PropTypes.string.isRequired,
     setMouseHandler: PropTypes.func.isRequired,
@@ -695,7 +697,7 @@ function wrapShape(WrappedComponent) {
     wrapperProps: PropTypes.shape({}),
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
-    rotation: PropTypes.number
+    rotation: PropTypes.number,
   };
 
   WrappedShape.defaultProps = {
@@ -718,7 +720,7 @@ function wrapShape(WrappedComponent) {
     ResizeHandleComponent: DefaultResizeHandleComponent,
     RotateHandleComponent: DefaultRotateHandleComponent,
     wrapperProps: {},
-    rotation: 0
+    rotation: 0,
   };
 
   WrappedShape.displayName = `wrapShape(${WrappedComponent.displayName ||
