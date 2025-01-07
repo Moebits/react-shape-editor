@@ -121,7 +121,7 @@ function wrapShape(WrappedComponent) {
       const nextRect = getRectFromCornerCoordinates(
         dragStartCoordinates,
         dragCurrentCoordinates,
-        newRotation
+        this.state.rotation
       );
 
       onChange(nextRect, this.props);
@@ -130,15 +130,13 @@ function wrapShape(WrappedComponent) {
     handleRotationMove(event) {
       if (!this.state.isRotating) return;
 
-      const {
-        rotation,
-        rotationStartAngle
-      } = this.state;
+      const { rotation, rotationStartAngle } = this.state;
       const currentAngle = this.calculateAngle(event);
       const deltaAngle = currentAngle - rotationStartAngle;
 
       const rotationSpeed = this.props.rotationSpeed || 1;
-      const newRotation = rotation + ((deltaAngle * 180) / Math.PI) * rotationSpeed;
+      const newRotation =
+        rotation + ((deltaAngle * 180) / Math.PI) * rotationSpeed;
 
       this.setState(() => ({
         rotation: newRotation,

@@ -654,7 +654,7 @@ function wrapShape(WrappedComponent) {
         });
         document.removeEventListener('mousemove', this.handleRotationMove);
         document.removeEventListener('mouseup', this.handleRotationEnd);
-        var nextRect = getRectFromCornerCoordinates(dragStartCoordinates, dragCurrentCoordinates, newRotation);
+        var nextRect = getRectFromCornerCoordinates(dragStartCoordinates, dragCurrentCoordinates, this.state.rotation);
         onChange(nextRect, this.props);
       }
     }, {
