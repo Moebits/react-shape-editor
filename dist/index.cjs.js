@@ -657,7 +657,7 @@ function wrapShape(WrappedComponent) {
         var rotationStartAngle = this.state.rotationStartAngle;
         var currentAngle = this.calculateAngle(event);
         var deltaAngle = currentAngle - rotationStartAngle;
-        var rotationSpeed = this.props.rotationSpeed || 1;
+        var rotationSpeed = this.props.scale * this.props.rotationSpeed;
         this.setState(function (prevState) {
           return {
             rotation: prevState.rotation + deltaAngle * 180 / Math.PI * rotationSpeed,
@@ -733,7 +733,7 @@ function wrapShape(WrappedComponent) {
         }
 
         if (this.state.isRotating) {
-          return;
+          return this.setState(defaultDragState);
         }
 
         var onChange = this.props.onChange;
@@ -1088,7 +1088,7 @@ function wrapShape(WrappedComponent) {
           radius: cornerSize / 2,
           scale: scale,
           x: width / 2,
-          y: -this.props.rotateHandlePadding / scale,
+          y: -cornerSize / 2 * 5,
           onMouseDown: this.handleRotationStart,
           onDoubleClick: this.handleDoubleClick
         }));
@@ -1266,8 +1266,7 @@ function wrapShape(WrappedComponent) {
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
     rotation: PropTypes.number,
-    rotationSpeed: PropTypes.number,
-    rotateHandlePadding: PropTypes.number
+    rotationSpeed: PropTypes.number
   };
   WrappedShape.defaultProps = {
     active: null,
@@ -1290,8 +1289,7 @@ function wrapShape(WrappedComponent) {
     RotateHandleComponent: DefaultRotateHandleComponent,
     wrapperProps: {},
     rotation: 0,
-    rotationSpeed: 1,
-    rotateHandlePadding: 30
+    rotationSpeed: 1
   };
   WrappedShape.displayName = "wrapShape(".concat(WrappedComponent.displayName || WrappedComponent.name || 'Component', ")");
   return withContext(WrappedShape);

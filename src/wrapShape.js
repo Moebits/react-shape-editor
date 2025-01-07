@@ -123,7 +123,7 @@ function wrapShape(WrappedComponent) {
       const currentAngle = this.calculateAngle(event);
       const deltaAngle = currentAngle - rotationStartAngle;
 
-      const rotationSpeed = this.props.rotationSpeed || 1;
+      const rotationSpeed = this.props.scale * this.props.rotationSpeed;
 
       this.setState(prevState => ({
         rotation:
@@ -189,7 +189,7 @@ function wrapShape(WrappedComponent) {
       }
 
       if (this.state.isRotating) {
-        return;
+        return this.setState(defaultDragState);
       }
 
       const { onChange } = this.props;
@@ -536,7 +536,7 @@ function wrapShape(WrappedComponent) {
           radius={cornerSize / 2}
           scale={scale}
           x={width / 2}
-          y={-(this.props.rotateHandlePadding) / scale}
+          y={-cornerSize / 2 * 5}
           onMouseDown={this.handleRotationStart}
           onDoubleClick={this.handleDoubleClick}
         />
@@ -701,8 +701,7 @@ function wrapShape(WrappedComponent) {
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
     rotation: PropTypes.number,
-    rotationSpeed: PropTypes.number,
-    rotateHandlePadding: PropTypes.number,
+    rotationSpeed: PropTypes.number
   };
 
   WrappedShape.defaultProps = {
@@ -726,8 +725,7 @@ function wrapShape(WrappedComponent) {
     RotateHandleComponent: DefaultRotateHandleComponent,
     wrapperProps: {},
     rotation: 0,
-    rotationSpeed: 1,
-    rotateHandlePadding: 30,
+    rotationSpeed: 1
   };
 
   WrappedShape.displayName = `wrapShape(${WrappedComponent.displayName ||
