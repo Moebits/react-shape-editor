@@ -647,15 +647,17 @@ function wrapShape(WrappedComponent) {
         event.stopPropagation();
         var angle = this.calculateAngle(event);
         var onChange = this.props.onChange;
-        var _this$state = this.state,
-            dragStartCoordinates = _this$state.dragStartCoordinates,
-            dragCurrentCoordinates = _this$state.dragCurrentCoordinates;
-        var nextRect = getRectFromCornerCoordinates(dragStartCoordinates, dragCurrentCoordinates, this.state.rotation);
         this.setState({
           isRotating: false,
           rotationStartAngle: angle
         }, function () {
-          onChange(nextRect, _this2.props);
+          onChange({
+            rotation: _this2.state.rotation,
+            x: _this2.props.x,
+            y: _this2.props.y,
+            width: _this2.props.width,
+            height: _this2.props.height
+          }, _this2.props);
         });
         document.removeEventListener('mousemove', this.handleRotationMove);
         document.removeEventListener('mouseup', this.handleRotationEnd);
@@ -664,9 +666,9 @@ function wrapShape(WrappedComponent) {
       key: "handleRotationMove",
       value: function handleRotationMove(event) {
         if (!this.state.isRotating) return;
-        var _this$state2 = this.state,
-            rotation = _this$state2.rotation,
-            rotationStartAngle = _this$state2.rotationStartAngle;
+        var _this$state = this.state,
+            rotation = _this$state.rotation,
+            rotationStartAngle = _this$state.rotationStartAngle;
         var currentAngle = this.calculateAngle(event);
         var deltaAngle = currentAngle - rotationStartAngle;
         var rotationSpeed = this.props.rotationSpeed || 1;
@@ -750,10 +752,10 @@ function wrapShape(WrappedComponent) {
         }
 
         var onChange = this.props.onChange;
-        var _this$state3 = this.state,
-            dragStartCoordinates = _this$state3.dragStartCoordinates,
-            dragCurrentCoordinates = _this$state3.dragCurrentCoordinates,
-            isDragToMove = _this$state3.isDragToMove;
+        var _this$state2 = this.state,
+            dragStartCoordinates = _this$state2.dragStartCoordinates,
+            dragCurrentCoordinates = _this$state2.dragCurrentCoordinates,
+            isDragToMove = _this$state2.isDragToMove;
 
         if (isDragToMove) {
           var nextX = dragCurrentCoordinates.x,
@@ -824,9 +826,9 @@ function wrapShape(WrappedComponent) {
             width = _this$props3.width,
             height = _this$props3.height,
             getPlaneCoordinatesFromEvent = _this$props3.getPlaneCoordinatesFromEvent;
-        var _this$state4 = this.state,
-            dragCurrentCoordinates = _this$state4.dragCurrentCoordinates,
-            dragInnerOffset = _this$state4.dragInnerOffset;
+        var _this$state3 = this.state,
+            dragCurrentCoordinates = _this$state3.dragCurrentCoordinates,
+            dragInnerOffset = _this$state3.dragInnerOffset;
 
         var _getPlaneCoordinatesF = getPlaneCoordinatesFromEvent(event, dragInnerOffset),
             rawX = _getPlaneCoordinatesF.x,
@@ -994,12 +996,12 @@ function wrapShape(WrappedComponent) {
             isInSelectionGroup = _this$props8.isInSelectionGroup,
             scale = _this$props8.scale,
             shapeId = _this$props8.shapeId;
-        var _this$state5 = this.state,
-            nativeActive = _this$state5.nativeActive,
-            isMouseDown = _this$state5.isMouseDown,
-            dragStartCoordinates = _this$state5.dragStartCoordinates,
-            dragCurrentCoordinates = _this$state5.dragCurrentCoordinates,
-            rotation = _this$state5.rotation;
+        var _this$state4 = this.state,
+            nativeActive = _this$state4.nativeActive,
+            isMouseDown = _this$state4.isMouseDown,
+            dragStartCoordinates = _this$state4.dragStartCoordinates,
+            dragCurrentCoordinates = _this$state4.dragCurrentCoordinates,
+            rotation = _this$state4.rotation;
         var active = artificialActive !== null ? artificialActive : nativeActive;
         var sides = !isMouseDown ? {
           left: this.props.x,
