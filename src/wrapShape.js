@@ -151,6 +151,7 @@ function wrapShape(WrappedComponent) {
 
     handleDoubleClick(event) {
       event.stopPropagation();
+      const { onChange } = this.props;
       this.setState({ rotation: 0, rotationStartAngle: null }, () => {
         onChange(
           {

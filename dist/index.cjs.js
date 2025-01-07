@@ -686,6 +686,7 @@ function wrapShape(WrappedComponent) {
         var _this3 = this;
 
         event.stopPropagation();
+        var onChange = this.props.onChange;
         this.setState({
           rotation: 0,
           rotationStartAngle: null
