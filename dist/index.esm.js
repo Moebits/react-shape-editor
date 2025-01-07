@@ -517,12 +517,13 @@ function withContext(Component) {
   return React.forwardRef(ComponentWithRseContext);
 }
 
-function getRectFromCornerCoordinates(corner1, corner2) {
+function getRectFromCornerCoordinates(corner1, corner2, rotation) {
   return {
     x: Math.min(corner1.x, corner2.x),
     y: Math.min(corner1.y, corner2.y),
     width: Math.abs(corner1.x - corner2.x),
-    height: Math.abs(corner1.y - corner2.y)
+    height: Math.abs(corner1.y - corner2.y),
+    rotation: rotation
   };
 }
 var defaultConstrainMove = function defaultConstrainMove(_ref) {
@@ -647,16 +648,20 @@ function wrapShape(WrappedComponent) {
       key: "handleRotationMove",
       value: function handleRotationMove(event) {
         if (!this.state.isRotating) return;
+        var onChange = this.props.onChange;
         var rotationStartAngle = this.state.rotationStartAngle;
         var currentAngle = this.calculateAngle(event);
         var deltaAngle = currentAngle - rotationStartAngle;
-        var rotationSpeed = this.props.scale * this.props.rotationSpeed;
+        var rotationSpeed = this.props.rotationSpeed || 1;
+        var newRotation = prevState.rotation + deltaAngle * 180 / Math.PI * rotationSpeed;
         this.setState(function (prevState) {
           return {
-            rotation: prevState.rotation + deltaAngle * 180 / Math.PI * rotationSpeed,
+            rotation: newRotation,
             rotationStartAngle: currentAngle
           };
         });
+        var nextRect = getRectFromCornerCoordinates(dragStartCoordinates, dragCurrentCoordinates, newRotation);
+        onChange(nextRect, this.props);
       }
     }, {
       key: "handleDoubleClick",
@@ -712,7 +717,7 @@ function wrapShape(WrappedComponent) {
             this.setState({
               dragCurrentCoordinates: _coords
             });
-            this.props.onIntermediateChange(getRectFromCornerCoordinates(_coords, this.state.dragStartCoordinates));
+            this.props.onIntermediateChange(getRectFromCornerCoordinates(_coords, this.state.dragStartCoordinates, this.state.rotation));
           }
         }
       }
@@ -722,11 +727,6 @@ function wrapShape(WrappedComponent) {
         var _this2 = this;
 
         if (!this.state.isMouseDown || this.unmounted) {
-          return;
-        }
-
-        if (this.state.isRotating) {
-          this.setState(defaultDragState);
           return;
         }
 
@@ -745,13 +745,14 @@ function wrapShape(WrappedComponent) {
                 x: nextX,
                 y: nextY,
                 width: _this2.props.width,
-                height: _this2.props.height
+                height: _this2.props.height,
+                rotation: _this2.state.rotation
               }, _this2.props);
             }
           });
         } else {
           this.setState(defaultDragState, function () {
-            var nextRect = getRectFromCornerCoordinates(dragStartCoordinates, dragCurrentCoordinates);
+            var nextRect = getRectFromCornerCoordinates(dragStartCoordinates, dragCurrentCoordinates, _this2.state.rotation);
 
             if (nextRect.height !== _this2.props.height || nextRect.width !== _this2.props.width || nextRect.x !== _this2.props.x || nextRect.y !== _this2.props.y) {
               onChange(nextRect, _this2.props);
@@ -887,7 +888,8 @@ function wrapShape(WrappedComponent) {
           x: nextX,
           y: nextY,
           width: this.props.width,
-          height: this.props.height
+          height: this.props.height,
+          rotation: this.state.rotation
         }, this.props);
       }
     }, {
@@ -925,7 +927,7 @@ function wrapShape(WrappedComponent) {
         }, {
           x: nextX,
           y: nextY
-        }), this.props);
+        }, this.state.rotation), this.props);
       }
     }, {
       key: "forceFocus",

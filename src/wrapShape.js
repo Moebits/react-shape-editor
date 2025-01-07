@@ -119,17 +119,27 @@ function wrapShape(WrappedComponent) {
     handleRotationMove(event) {
       if (!this.state.isRotating) return;
 
+      const { onChange } = this.props;
       const { rotationStartAngle } = this.state;
       const currentAngle = this.calculateAngle(event);
       const deltaAngle = currentAngle - rotationStartAngle;
 
-      const rotationSpeed = this.props.scale * this.props.rotationSpeed;
+      const rotationSpeed = this.props.rotationSpeed || 1;
+      const newRotation = prevState.rotation + ((deltaAngle * 180) / Math.PI) * rotationSpeed
 
       this.setState(prevState => ({
-        rotation:
-          prevState.rotation + ((deltaAngle * 180) / Math.PI) * rotationSpeed,
+        rotation: newRotation,
         rotationStartAngle: currentAngle,
       }));
+
+
+      const nextRect = getRectFromCornerCoordinates(
+        dragStartCoordinates,
+        dragCurrentCoordinates,
+        newRotation
+      );
+
+      onChange(nextRect, this.props);
     }
 
     handleDoubleClick(event) {
@@ -176,7 +186,8 @@ function wrapShape(WrappedComponent) {
           this.props.onIntermediateChange(
             getRectFromCornerCoordinates(
               coords,
-              this.state.dragStartCoordinates
+              this.state.dragStartCoordinates,
+              this.state.rotation
             )
           );
         }
@@ -185,11 +196,6 @@ function wrapShape(WrappedComponent) {
 
     onMouseUp() {
       if (!this.state.isMouseDown || this.unmounted) {
-        return;
-      }
-
-      if (this.state.isRotating) {
-        this.setState(defaultDragState);
         return;
       }
 
@@ -211,6 +217,7 @@ function wrapShape(WrappedComponent) {
                 y: nextY,
                 width: this.props.width,
                 height: this.props.height,
+                rotation: this.state.rotation
               },
               this.props
             );
@@ -220,7 +227,8 @@ function wrapShape(WrappedComponent) {
         this.setState(defaultDragState, () => {
           const nextRect = getRectFromCornerCoordinates(
             dragStartCoordinates,
-            dragCurrentCoordinates
+            dragCurrentCoordinates,
+            this.state.rotation
           );
           if (
             nextRect.height !== this.props.height ||
@@ -340,6 +348,7 @@ function wrapShape(WrappedComponent) {
           y: nextY,
           width: this.props.width,
           height: this.props.height,
+          rotation: this.state.rotation
         },
         this.props
       );
@@ -369,7 +378,7 @@ function wrapShape(WrappedComponent) {
       });
 
       onChange(
-        getRectFromCornerCoordinates({ x, y }, { x: nextX, y: nextY }),
+        getRectFromCornerCoordinates({ x, y }, { x: nextX, y: nextY }, this.state.rotation),
         this.props
       );
     }
