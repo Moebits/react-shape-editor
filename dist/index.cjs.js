@@ -683,10 +683,20 @@ function wrapShape(WrappedComponent) {
     }, {
       key: "handleDoubleClick",
       value: function handleDoubleClick(event) {
+        var _this3 = this;
+
         event.stopPropagation();
         this.setState({
           rotation: 0,
           rotationStartAngle: null
+        }, function () {
+          onChange({
+            rotation: 0,
+            x: _this3.props.x,
+            y: _this3.props.y,
+            width: _this3.props.width,
+            height: _this3.props.height
+          }, _this3.props);
         });
       }
     }, {
@@ -741,7 +751,7 @@ function wrapShape(WrappedComponent) {
     }, {
       key: "onMouseUp",
       value: function onMouseUp() {
-        var _this3 = this;
+        var _this4 = this;
 
         if (!this.state.isMouseDown || this.unmounted) {
           return;
@@ -761,22 +771,22 @@ function wrapShape(WrappedComponent) {
           var nextX = dragCurrentCoordinates.x,
               nextY = dragCurrentCoordinates.y;
           this.setState(defaultDragState, function () {
-            if (nextX !== _this3.props.x || nextY !== _this3.props.y) {
+            if (nextX !== _this4.props.x || nextY !== _this4.props.y) {
               onChange({
                 x: nextX,
                 y: nextY,
-                width: _this3.props.width,
-                height: _this3.props.height,
-                rotation: _this3.state.rotation
-              }, _this3.props);
+                width: _this4.props.width,
+                height: _this4.props.height,
+                rotation: _this4.state.rotation
+              }, _this4.props);
             }
           });
         } else {
           this.setState(defaultDragState, function () {
-            var nextRect = getRectFromCornerCoordinates(dragStartCoordinates, dragCurrentCoordinates, _this3.state.rotation);
+            var nextRect = getRectFromCornerCoordinates(dragStartCoordinates, dragCurrentCoordinates, _this4.state.rotation);
 
-            if (nextRect.height !== _this3.props.height || nextRect.width !== _this3.props.width || nextRect.x !== _this3.props.x || nextRect.y !== _this3.props.y) {
-              onChange(nextRect, _this3.props);
+            if (nextRect.height !== _this4.props.height || nextRect.width !== _this4.props.width || nextRect.x !== _this4.props.x || nextRect.y !== _this4.props.y) {
+              onChange(nextRect, _this4.props);
             }
           });
         }
@@ -793,7 +803,7 @@ function wrapShape(WrappedComponent) {
     }, {
       key: "simulateTransform",
       value: function simulateTransform(nextRect) {
-        var _this4 = this;
+        var _this5 = this;
 
         cancelAnimationFrame(this.simulatedTransform);
 
@@ -803,7 +813,7 @@ function wrapShape(WrappedComponent) {
         }
 
         this.simulatedTransform = window.requestAnimationFrame(function () {
-          _this4.setState(function () {
+          _this5.setState(function () {
             return {
               isMouseDown: true,
               dragStartCoordinates: {
@@ -966,7 +976,7 @@ function wrapShape(WrappedComponent) {
     }, {
       key: "render",
       value: function render() {
-        var _this5 = this;
+        var _this6 = this;
 
         var _this$props7 = this.props,
             constrainMove = _this$props7.constrainMove,
@@ -1078,9 +1088,9 @@ function wrapShape(WrappedComponent) {
                 x: planeX - movingPoint.x,
                 y: planeY - movingPoint.y
               };
-              setMouseHandler(_this5.mouseHandler);
+              setMouseHandler(_this6.mouseHandler);
 
-              _this5.setState({
+              _this6.setState({
                 isMouseDown: true,
                 dragStartCoordinates: anchorPoint,
                 dragCurrentCoordinates: movingPoint,
@@ -1120,27 +1130,27 @@ function wrapShape(WrappedComponent) {
             pointerEvents: 'none'
           } : {}),
           ref: function ref(el) {
-            _this5.wrapperEl = el;
+            _this6.wrapperEl = el;
           },
           focusable: !disabled ? true : undefined // IE11 support
           ,
           tabIndex: !disabled ? 0 : undefined,
           onFocus: function onFocus(event) {
-            _this5.gotFocusAfterClick = true;
+            _this6.gotFocusAfterClick = true;
             onChildFocus(shapeId, isInternalComponent);
 
-            _this5.setState({
+            _this6.setState({
               nativeActive: true
             });
 
-            _onFocus(event, _this5.props);
+            _onFocus(event, _this6.props);
           },
           onBlur: function onBlur(event) {
-            _this5.setState({
+            _this6.setState({
               nativeActive: false
             });
 
-            _onBlur(event, _this5.props);
+            _onBlur(event, _this6.props);
           },
           onMouseDown: function onMouseDown(event) {
             event.stopPropagation(); // Focusing support for Safari
@@ -1149,10 +1159,10 @@ function wrapShape(WrappedComponent) {
             // does work, however). This logic waits to see if focus was called
             // following a click, and forces the focused state if necessary.
 
-            _this5.gotFocusAfterClick = false;
+            _this6.gotFocusAfterClick = false;
             setTimeout(function () {
-              if (!_this5.unmounted && !_this5.gotFocusAfterClick) {
-                _this5.forceFocus();
+              if (!_this6.unmounted && !_this6.gotFocusAfterClick) {
+                _this6.forceFocus();
               }
             });
 
@@ -1165,9 +1175,9 @@ function wrapShape(WrappedComponent) {
               return;
             }
 
-            var _this5$props = _this5.props,
-                x = _this5$props.x,
-                y = _this5$props.y;
+            var _this6$props = _this6.props,
+                x = _this6$props.x,
+                y = _this6$props.y;
 
             var _getPlaneCoordinatesF4 = getPlaneCoordinatesFromEvent(event),
                 planeX = _getPlaneCoordinatesF4.x,
@@ -1177,9 +1187,9 @@ function wrapShape(WrappedComponent) {
               x: planeX - x,
               y: planeY - y
             };
-            setMouseHandler(_this5.mouseHandler);
+            setMouseHandler(_this6.mouseHandler);
 
-            _this5.setState({
+            _this6.setState({
               isMouseDown: true,
               dragCurrentCoordinates: {
                 x: x,
@@ -1194,7 +1204,7 @@ function wrapShape(WrappedComponent) {
             });
           },
           onKeyDown: function onKeyDown(event) {
-            _onKeyDown(event, _this5.props); // If the user-defined callback called event.preventDefault(),
+            _onKeyDown(event, _this6.props); // If the user-defined callback called event.preventDefault(),
             // we consider the event handled
 
 
@@ -1205,13 +1215,13 @@ function wrapShape(WrappedComponent) {
             var handled = true;
 
             var handleKeyboardTransform = function handleKeyboardTransform(moveArgs, resizeArgs) {
-              return event.shiftKey ? _this5.keyboardResize.apply(_this5, _toConsumableArray(resizeArgs)) : _this5.keyboardMove.apply(_this5, _toConsumableArray(moveArgs));
+              return event.shiftKey ? _this6.keyboardResize.apply(_this6, _toConsumableArray(resizeArgs)) : _this6.keyboardMove.apply(_this6, _toConsumableArray(moveArgs));
             };
 
             switch (event.key) {
               case 'Backspace':
               case 'Delete':
-                onDelete(event, _this5.props);
+                onDelete(event, _this6.props);
                 break;
 
               case 'ArrowUp':

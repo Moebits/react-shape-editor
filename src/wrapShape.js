@@ -109,18 +109,24 @@ function wrapShape(WrappedComponent) {
 
       const { onChange } = this.props;
 
-      this.setState({
+      this.setState(
+        {
           isRotating: false,
           rotationStartAngle: angle,
-      }, () => {
-        onChange({
-          rotation: this.state.rotation,
-          x: this.props.x,
-          y: this.props.y,
-          width: this.props.width,
-          height: this.props.height
-        }, this.props);
-      });
+        },
+        () => {
+          onChange(
+            {
+              rotation: this.state.rotation,
+              x: this.props.x,
+              y: this.props.y,
+              width: this.props.width,
+              height: this.props.height,
+            },
+            this.props
+          );
+        }
+      );
 
       document.removeEventListener('mousemove', this.handleRotationMove);
       document.removeEventListener('mouseup', this.handleRotationEnd);
@@ -145,7 +151,18 @@ function wrapShape(WrappedComponent) {
 
     handleDoubleClick(event) {
       event.stopPropagation();
-      this.setState({ rotation: 0, rotationStartAngle: null });
+      this.setState({ rotation: 0, rotationStartAngle: null }, () => {
+        onChange(
+          {
+            rotation: 0,
+            x: this.props.x,
+            y: this.props.y,
+            width: this.props.width,
+            height: this.props.height,
+          },
+          this.props
+        );
+      });
     }
 
     onMouseMove(event) {
