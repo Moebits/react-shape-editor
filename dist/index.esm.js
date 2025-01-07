@@ -649,12 +649,16 @@ function wrapShape(WrappedComponent) {
       value: function handleRotationMove(event) {
         if (!this.state.isRotating) return;
         var onChange = this.props.onChange;
-        var rotationStartAngle = this.state.rotationStartAngle;
+        var _this$state = this.state,
+            rotation = _this$state.rotation,
+            rotationStartAngle = _this$state.rotationStartAngle,
+            dragStartCoordinates = _this$state.dragStartCoordinates,
+            dragCurrentCoordinates = _this$state.dragCurrentCoordinates;
         var currentAngle = this.calculateAngle(event);
         var deltaAngle = currentAngle - rotationStartAngle;
         var rotationSpeed = this.props.rotationSpeed || 1;
-        var newRotation = prevState.rotation + deltaAngle * 180 / Math.PI * rotationSpeed;
-        this.setState(function (prevState) {
+        var newRotation = rotation + deltaAngle * 180 / Math.PI * rotationSpeed;
+        this.setState(function () {
           return {
             rotation: newRotation,
             rotationStartAngle: currentAngle
@@ -731,10 +735,10 @@ function wrapShape(WrappedComponent) {
         }
 
         var onChange = this.props.onChange;
-        var _this$state = this.state,
-            dragStartCoordinates = _this$state.dragStartCoordinates,
-            dragCurrentCoordinates = _this$state.dragCurrentCoordinates,
-            isDragToMove = _this$state.isDragToMove;
+        var _this$state2 = this.state,
+            dragStartCoordinates = _this$state2.dragStartCoordinates,
+            dragCurrentCoordinates = _this$state2.dragCurrentCoordinates,
+            isDragToMove = _this$state2.isDragToMove;
 
         if (isDragToMove) {
           var nextX = dragCurrentCoordinates.x,
@@ -805,9 +809,9 @@ function wrapShape(WrappedComponent) {
             width = _this$props3.width,
             height = _this$props3.height,
             getPlaneCoordinatesFromEvent = _this$props3.getPlaneCoordinatesFromEvent;
-        var _this$state2 = this.state,
-            dragCurrentCoordinates = _this$state2.dragCurrentCoordinates,
-            dragInnerOffset = _this$state2.dragInnerOffset;
+        var _this$state3 = this.state,
+            dragCurrentCoordinates = _this$state3.dragCurrentCoordinates,
+            dragInnerOffset = _this$state3.dragInnerOffset;
 
         var _getPlaneCoordinatesF = getPlaneCoordinatesFromEvent(event, dragInnerOffset),
             rawX = _getPlaneCoordinatesF.x,
@@ -975,12 +979,12 @@ function wrapShape(WrappedComponent) {
             isInSelectionGroup = _this$props8.isInSelectionGroup,
             scale = _this$props8.scale,
             shapeId = _this$props8.shapeId;
-        var _this$state3 = this.state,
-            nativeActive = _this$state3.nativeActive,
-            isMouseDown = _this$state3.isMouseDown,
-            dragStartCoordinates = _this$state3.dragStartCoordinates,
-            dragCurrentCoordinates = _this$state3.dragCurrentCoordinates,
-            rotation = _this$state3.rotation;
+        var _this$state4 = this.state,
+            nativeActive = _this$state4.nativeActive,
+            isMouseDown = _this$state4.isMouseDown,
+            dragStartCoordinates = _this$state4.dragStartCoordinates,
+            dragCurrentCoordinates = _this$state4.dragCurrentCoordinates,
+            rotation = _this$state4.rotation;
         var active = artificialActive !== null ? artificialActive : nativeActive;
         var sides = !isMouseDown ? {
           left: this.props.x,
