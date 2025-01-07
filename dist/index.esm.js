@@ -726,7 +726,8 @@ function wrapShape(WrappedComponent) {
         }
 
         if (this.state.isRotating) {
-          return this.setState(defaultDragState);
+          this.setState(defaultDragState);
+          return;
         }
 
         var onChange = this.props.onChange;
