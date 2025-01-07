@@ -8,10 +8,11 @@ const DefaultRotateHandleComponent = ({
   cursor,
   isInSelectionGroup,
   onMouseDown,
+  onDoubleClick,
   radius,
   scale,
   x,
-  rotateHandlePadding,
+  y
 }) => (
   <circle
     fill={active ? 'rgba(229,240,244,1)' : 'rgba(229,240,244,0.3)'}
@@ -20,8 +21,9 @@ const DefaultRotateHandleComponent = ({
     style={{ cursor, opacity: isInSelectionGroup ? 0 : 1 }}
     r={radius}
     cx={x}
-    cy={-rotateHandlePadding / scale}
+    cy={y}
     onMouseDown={onMouseDown}
+    onDoubleClick={onDoubleClick}
   />
 );
 
@@ -32,12 +34,12 @@ DefaultRotateHandleComponent.propTypes = {
   isInSelectionGroup: PropTypes.bool.isRequired,
   name: PropTypes.string.isRequired,
   onMouseDown: PropTypes.func.isRequired,
+  onDoubleClick: PropTypes.func.isRequired,
   recommendedSize: PropTypes.number.isRequired,
   scale: PropTypes.number.isRequired,
   x: PropTypes.number.isRequired,
   y: PropTypes.number.isRequired,
-  radius: PropTypes.number.isRequired,
-  rotateHandlePadding: PropTypes.number.isRequired,
+  radius: PropTypes.number.isRequired
 };
 
 export default DefaultRotateHandleComponent;
