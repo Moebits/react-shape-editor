@@ -469,11 +469,11 @@ var DefaultRotateHandleComponent = function DefaultRotateHandleComponent(_ref) {
       cursor = _ref.cursor,
       isInSelectionGroup = _ref.isInSelectionGroup,
       onMouseDown = _ref.onMouseDown,
+      onDoubleClick = _ref.onDoubleClick,
       radius = _ref.radius,
       scale = _ref.scale,
       x = _ref.x,
-      y = _ref.y,
-      rotateHandlePadding = _ref.rotateHandlePadding;
+      y = _ref.y;
   return React__default.createElement("circle", {
     fill: active ? 'rgba(229,240,244,1)' : 'rgba(229,240,244,0.3)',
     stroke: active ? 'rgba(53,33,140,1)' : 'rgba(53,33,140,0.3)',
@@ -484,8 +484,9 @@ var DefaultRotateHandleComponent = function DefaultRotateHandleComponent(_ref) {
     },
     r: radius,
     cx: x,
-    cy: -rotateHandlePadding / scale,
-    onMouseDown: onMouseDown
+    cy: y,
+    onMouseDown: onMouseDown,
+    onDoubleClick: onDoubleClick
   });
 };
 
@@ -496,10 +497,12 @@ DefaultRotateHandleComponent.propTypes = {
   isInSelectionGroup: PropTypes.bool.isRequired,
   name: PropTypes.string.isRequired,
   onMouseDown: PropTypes.func.isRequired,
+  onDoubleClick: PropTypes.func.isRequired,
   recommendedSize: PropTypes.number.isRequired,
   scale: PropTypes.number.isRequired,
   x: PropTypes.number.isRequired,
-  y: PropTypes.number.isRequired
+  y: PropTypes.number.isRequired,
+  radius: PropTypes.number.isRequired
 };
 
 function withContext(Component) {
@@ -632,8 +635,8 @@ function wrapShape(WrappedComponent) {
           isRotating: true,
           rotationStartAngle: angle
         });
-        document.addEventListener("mousemove", this.handleRotationMove);
-        document.addEventListener("mouseup", this.handleRotationEnd);
+        document.addEventListener('mousemove', this.handleRotationMove);
+        document.addEventListener('mouseup', this.handleRotationEnd);
       }
     }, {
       key: "handleRotationEnd",
@@ -644,8 +647,8 @@ function wrapShape(WrappedComponent) {
           isRotating: false,
           rotationStartAngle: angle
         });
-        document.removeEventListener("mousemove", this.handleRotationMove);
-        document.removeEventListener("mouseup", this.handleRotationEnd);
+        document.removeEventListener('mousemove', this.handleRotationMove);
+        document.removeEventListener('mouseup', this.handleRotationEnd);
       }
     }, {
       key: "handleRotationMove",
@@ -654,9 +657,10 @@ function wrapShape(WrappedComponent) {
         var rotationStartAngle = this.state.rotationStartAngle;
         var currentAngle = this.calculateAngle(event);
         var deltaAngle = currentAngle - rotationStartAngle;
+        var rotationSpeed = this.props.rotationSpeed || 1;
         this.setState(function (prevState) {
           return {
-            rotation: prevState.rotation + deltaAngle * 180 / Math.PI,
+            rotation: prevState.rotation + deltaAngle * 180 / Math.PI * rotationSpeed,
             rotationStartAngle: currentAngle
           };
         });
@@ -729,7 +733,6 @@ function wrapShape(WrappedComponent) {
         }
 
         if (this.state.isRotating) {
-          this.handleRotationEnd(event);
           return;
         }
 
@@ -1085,8 +1088,9 @@ function wrapShape(WrappedComponent) {
           radius: cornerSize / 2,
           scale: scale,
           x: width / 2,
-          rotateHandlePadding: cornerSize * 3,
-          onMouseDown: this.handleRotationStart
+          y: -(cornerSize * 3) / scale,
+          onMouseDown: this.handleRotationStart,
+          onDoubleClick: this.handleDoubleClick
         }));
         return React__default.createElement("g", _extends({
           "data-shape-id": shapeId,
@@ -1098,7 +1102,6 @@ function wrapShape(WrappedComponent) {
           }, disabled ? {
             pointerEvents: 'none'
           } : {}),
-          onDoubleClick: this.handleDoubleClick,
           ref: function ref(el) {
             _this4.wrapperEl = el;
           },
@@ -1254,6 +1257,7 @@ function wrapShape(WrappedComponent) {
     onIntermediateChange: PropTypes.func,
     onShapeMountedOrUnmounted: PropTypes.func.isRequired,
     ResizeHandleComponent: PropTypes.func,
+    RotateHandleComponent: PropTypes.func,
     scale: PropTypes.number.isRequired,
     shapeId: PropTypes.string.isRequired,
     setMouseHandler: PropTypes.func.isRequired,
@@ -1261,7 +1265,8 @@ function wrapShape(WrappedComponent) {
     wrapperProps: PropTypes.shape({}),
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
-    rotation: PropTypes.number
+    rotation: PropTypes.number,
+    rotationSpeed: PropTypes.number
   };
   WrappedShape.defaultProps = {
     active: null,
@@ -1283,7 +1288,8 @@ function wrapShape(WrappedComponent) {
     ResizeHandleComponent: DefaultResizeHandleComponent,
     RotateHandleComponent: DefaultRotateHandleComponent,
     wrapperProps: {},
-    rotation: 0
+    rotation: 0,
+    rotationSpeed: 1
   };
   WrappedShape.displayName = "wrapShape(".concat(WrappedComponent.displayName || WrappedComponent.name || 'Component', ")");
   return withContext(WrappedShape);

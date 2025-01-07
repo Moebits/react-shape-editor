@@ -12,7 +12,7 @@ const DefaultRotateHandleComponent = ({
   radius,
   scale,
   x,
-  y
+  y,
 }) => (
   <circle
     fill={active ? 'rgba(229,240,244,1)' : 'rgba(229,240,244,0.3)'}
@@ -39,7 +39,7 @@ DefaultRotateHandleComponent.propTypes = {
   scale: PropTypes.number.isRequired,
   x: PropTypes.number.isRequired,
   y: PropTypes.number.isRequired,
-  radius: PropTypes.number.isRequired
+  radius: PropTypes.number.isRequired,
 };
 
 export default DefaultRotateHandleComponent;

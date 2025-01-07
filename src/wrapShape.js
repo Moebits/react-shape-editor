@@ -126,7 +126,8 @@ function wrapShape(WrappedComponent) {
       const rotationSpeed = this.props.rotationSpeed || 1;
 
       this.setState(prevState => ({
-        rotation: prevState.rotation + (deltaAngle * 180) / Math.PI * rotationSpeed,
+        rotation:
+          prevState.rotation + ((deltaAngle * 180) / Math.PI) * rotationSpeed,
         rotationStartAngle: currentAngle,
       }));
     }
@@ -700,7 +701,7 @@ function wrapShape(WrappedComponent) {
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
     rotation: PropTypes.number,
-    rotationSpeed: PropTypes.number
+    rotationSpeed: PropTypes.number,
   };
 
   WrappedShape.defaultProps = {
@@ -724,7 +725,7 @@ function wrapShape(WrappedComponent) {
     RotateHandleComponent: DefaultRotateHandleComponent,
     wrapperProps: {},
     rotation: 0,
-    rotationSpeed: 1
+    rotationSpeed: 1,
   };
 
   WrappedShape.displayName = `wrapShape(${WrappedComponent.displayName ||
