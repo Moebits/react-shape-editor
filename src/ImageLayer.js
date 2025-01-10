@@ -1,77 +1,78 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 class ImageLayer extends Component {
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       naturalWidth: 0,
-      naturalHeight: 0
-    }
+      naturalHeight: 0,
+    };
 
-    this.getImageDimensionInfo = this.getImageDimensionInfo.bind(this)
+    this.getImageDimensionInfo = this.getImageDimensionInfo.bind(this);
   }
 
   componentDidMount() {
-    this.getImageDimensionInfo()
+    this.getImageDimensionInfo();
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.src !== this.props.src) {
-      this.getImageDimensionInfo()
+      this.getImageDimensionInfo();
     }
   }
 
   componentWillUnmount() {
-    this.unmounted = true
+    this.unmounted = true;
   }
 
   // Load the image to measure its dimensions
   getImageDimensionInfo() {
-    const { src: initialSrc } = this.props
-    const memoryImage = new Image()
+    const { src: initialSrc } = this.props;
+    const memoryImage = new Image();
 
     memoryImage.onload = () => {
       if (this.unmounted || this.props.src !== initialSrc) {
-        return
+        return;
       }
 
       this.setState({
         naturalWidth: memoryImage.naturalWidth,
-        naturalHeight: memoryImage.naturalHeight
-      })
+        naturalHeight: memoryImage.naturalHeight,
+      });
 
       this.props.onLoad({
         naturalWidth: memoryImage.naturalWidth,
-        naturalHeight: memoryImage.naturalHeight
-      })
-    }
-    memoryImage.src = initialSrc
+        naturalHeight: memoryImage.naturalHeight,
+      });
+    };
+    memoryImage.src = initialSrc;
   }
 
   render() {
-    const { onLoad, src, ...otherProps } = this.props
-    const { naturalHeight, naturalWidth } = this.state
+    const { onLoad, src, ...otherProps } = this.props;
+    const { naturalHeight, naturalWidth } = this.state;
 
     return (
       <img
         src={src}
+        alt=""
         width={naturalWidth || undefined}
         height={naturalHeight || undefined}
         {...otherProps}
       />
-    )
+    );
   }
 }
 
 ImageLayer.propTypes = {
   onLoad: PropTypes.func,
-  src: PropTypes.string.isRequired
-}
+  src: PropTypes.string.isRequired,
+};
 
 ImageLayer.defaultProps = {
-  onLoad: () => {}
-}
+  onLoad: () => {},
+};
 
-export default ImageLayer
+export default ImageLayer;
