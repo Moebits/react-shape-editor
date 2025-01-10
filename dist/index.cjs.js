@@ -1358,7 +1358,7 @@ function (_Component) {
     key: "componentWillUnmount",
     value: function componentWillUnmount() {
       this.unmounted = true;
-    } // Load the background image in memory to measure its dimensions
+    } // Load the image to measure its dimensions
 
   }, {
     key: "getImageDimensionInfo",
@@ -1397,10 +1397,10 @@ function (_Component) {
       var _this$state = this.state,
           naturalHeight = _this$state.naturalHeight,
           naturalWidth = _this$state.naturalWidth;
-      return React__default.createElement("image", _extends({
-        href: src,
-        width: naturalWidth,
-        height: naturalHeight
+      return React__default.createElement("img", _extends({
+        src: src,
+        width: naturalWidth || undefined,
+        height: naturalHeight || undefined
       }, otherProps));
     }
   }]);
