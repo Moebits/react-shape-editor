@@ -27,7 +27,7 @@ class ImageLayer extends Component {
     this.unmounted = true;
   }
 
-  // Load the image to measure its dimensions
+  // Load the background image in memory to measure its dimensions
   getImageDimensionInfo() {
     const { src: initialSrc } = this.props;
     const memoryImage = new Image();
@@ -41,7 +41,6 @@ class ImageLayer extends Component {
         naturalWidth: memoryImage.naturalWidth,
         naturalHeight: memoryImage.naturalHeight,
       });
-
       this.props.onLoad({
         naturalWidth: memoryImage.naturalWidth,
         naturalHeight: memoryImage.naturalHeight,
@@ -55,11 +54,10 @@ class ImageLayer extends Component {
     const { naturalHeight, naturalWidth } = this.state;
 
     return (
-      <img
-        src={src}
-        alt=""
-        width={naturalWidth || undefined}
-        height={naturalHeight || undefined}
+      <image
+        href={src}
+        width={naturalWidth}
+        height={naturalHeight}
         {...otherProps}
       />
     );
