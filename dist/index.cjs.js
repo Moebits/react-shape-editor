@@ -548,8 +548,6 @@ var defaultConstrainResize = function defaultConstrainResize(_ref2) {
 
 var defaultDragState = {
   isMouseDown: false,
-  dragStartCoordinates: null,
-  dragCurrentCoordinates: null,
   dragInnerOffset: null,
   dragLock: null
 };
@@ -571,7 +569,15 @@ function wrapShape(WrappedComponent) {
         nativeActive: false,
         rotation: props.rotation || 0,
         isRotating: false,
-        rotationStartAngle: null
+        rotationStartAngle: null,
+        dragStartCoordinates: {
+          x: props.x,
+          y: props.y
+        },
+        dragCurrentCoordinates: {
+          x: props.x,
+          y: props.y
+        }
       });
       _this.onMouseUp = _this.onMouseUp.bind(_assertThisInitialized(_this));
       _this.onMouseMove = _this.onMouseMove.bind(_assertThisInitialized(_this));

@@ -11,8 +11,6 @@ import {
 
 const defaultDragState = {
   isMouseDown: false,
-  dragStartCoordinates: null,
-  dragCurrentCoordinates: null,
   dragInnerOffset: null,
   dragLock: null,
 };
@@ -29,6 +27,8 @@ function wrapShape(WrappedComponent) {
         rotation: props.rotation || 0,
         isRotating: false,
         rotationStartAngle: null,
+        dragStartCoordinates: {x: props.x, y: props.y},
+        dragCurrentCoordinates: {x: props.x, y: props.y}
       };
 
       this.onMouseUp = this.onMouseUp.bind(this);
